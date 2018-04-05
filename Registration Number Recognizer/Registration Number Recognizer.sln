@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{2F462FE3-A534-45D6-BEA2-EAE1671EC658}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Calculations", "Calculations\Calculations.vcxproj", "{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI + CALCULATIONS", "GUI\GUI + CALCULATIONS.csproj", "{2F462FE3-A534-45D6-BEA2-EAE1671EC658}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,16 +27,6 @@ Global
 		{2F462FE3-A534-45D6-BEA2-EAE1671EC658}.Release|x64.Build.0 = Release|Any CPU
 		{2F462FE3-A534-45D6-BEA2-EAE1671EC658}.Release|x86.ActiveCfg = Release|Any CPU
 		{2F462FE3-A534-45D6-BEA2-EAE1671EC658}.Release|x86.Build.0 = Release|Any CPU
-		{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}.Debug|x64.ActiveCfg = Debug|x64
-		{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}.Debug|x64.Build.0 = Debug|x64
-		{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}.Debug|x86.ActiveCfg = Debug|Win32
-		{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}.Debug|x86.Build.0 = Debug|Win32
-		{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}.Release|Any CPU.ActiveCfg = Release|Win32
-		{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}.Release|x64.ActiveCfg = Release|x64
-		{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}.Release|x64.Build.0 = Release|x64
-		{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}.Release|x86.ActiveCfg = Release|Win32
-		{EA9D4AD3-4E5F-49B0-B9D8-9AC55484230D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
