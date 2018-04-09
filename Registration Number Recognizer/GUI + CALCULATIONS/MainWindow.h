@@ -119,6 +119,7 @@ namespace GUICALCULATIONS {
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(100, 20);
 			this->textBox1->TabIndex = 7;
+			this->textBox1->TextChanged += gcnew System::EventHandler(this, &MainWindow::textBox1_TextChanged);
 			// 
 			// MainWindow
 			// 
@@ -193,5 +194,7 @@ private: System::Void btnLearn_Click(System::Object^  sender, System::EventArgs^
 	std::string saveSVM(buffer2); //path (including name and extension) of the generated data (SVM)
 }
 
+private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+}
 };
 }
