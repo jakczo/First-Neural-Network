@@ -54,6 +54,9 @@ namespace GUICALCULATIONS {
 	private: System::Windows::Forms::TextBox^  textBox1;
 
 
+
+
+
 	protected:
 
 	protected:
@@ -73,6 +76,7 @@ namespace GUICALCULATIONS {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MainWindow::typeid));
 			this->ptbSource = (gcnew System::Windows::Forms::PictureBox());
 			this->btnProcess = (gcnew System::Windows::Forms::Button());
 			this->btnLearn = (gcnew System::Windows::Forms::Button());
@@ -107,14 +111,14 @@ namespace GUICALCULATIONS {
 			this->btnLearn->TabIndex = 6;
 			this->btnLearn->Text = L"Learn";
 			this->btnLearn->UseVisualStyleBackColor = true;
+			this->btnLearn->Click += gcnew System::EventHandler(this, &MainWindow::btnLearn_Click);
 			// 
 			// textBox1
 			// 
-			this->textBox1->Location = System::Drawing::Point(437, 20);
+			this->textBox1->Location = System::Drawing::Point(465, 20);
 			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(128, 20);
+			this->textBox1->Size = System::Drawing::Size(100, 20);
 			this->textBox1->TabIndex = 7;
-			this->textBox1->TextChanged += gcnew System::EventHandler(this, &MainWindow::textBox1_TextChanged);
 			// 
 			// MainWindow
 			// 
@@ -125,6 +129,7 @@ namespace GUICALCULATIONS {
 			this->Controls->Add(this->btnLearn);
 			this->Controls->Add(this->btnProcess);
 			this->Controls->Add(this->ptbSource);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MainWindow";
 			this->Text = L"MainWindow";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ptbSource))->EndInit();
@@ -157,5 +162,36 @@ private: System::Void btnProcess_Click(System::Object^  sender, System::EventArg
 	src = imread(ConvertString2Char(dgOpen->FileName));
 	imshow("Source image showing via OpenCV", src); //new window
 }
+private: System::Void btnLearn_Click(System::Object^  sender, System::EventArgs^  e) {
+
+	//choose from where program should get data
+	FolderBrowserDialog^ folder = gcnew FolderBrowserDialog();
+	if (folder->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
+	{
+		return;
+	}
+
+	System::String^ folderPath;
+	folderPath = folder->SelectedPath;
+	char buffer1[100] = { 0 };
+	if (folderPath->Length < sizeof(buffer1))
+		sprintf(buffer1, "%s", folderPath);
+	std::string folderPathString(buffer1); //path of the data content
+
+	
+	//choose where to save SVM file
+	SaveFileDialog^ saveFile = gcnew SaveFileDialog();
+	if (saveFile->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
+	{
+		return;
+	}
+
+	System::String^ saveFileName = saveFile->FileName; //FileName with path
+	char buffer2[100] = { 0 };
+	if (saveFileName->Length < sizeof(buffer2))
+		sprintf(buffer2, "%s", saveFileName);
+	std::string saveSVM(buffer2); //path (including name and extension) of the generated data (SVM)
+}
+
 };
 }
