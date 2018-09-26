@@ -146,55 +146,55 @@ namespace GUICALCULATIONS {
 	}
 
 
-private: System::Void btnProcess_Click(System::Object^  sender, System::EventArgs^  e) { //Process button action
+	private: System::Void btnProcess_Click(System::Object^  sender, System::EventArgs^  e) { //Process button action
 																						 
-	//Open File Dialog (select a path)
-	OpenFileDialog^ dgOpen = gcnew OpenFileDialog();
-	dgOpen->Filter = "Image(*.bmp; *.jpg)|*.bmp;*.jpg|All files (*.*)|*.*||";
-	if (dgOpen->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
-	{
-		return;
+		//Open File Dialog (select a path)
+		OpenFileDialog^ dgOpen = gcnew OpenFileDialog();
+		dgOpen->Filter = "Image(*.bmp; *.jpg)|*.bmp;*.jpg|All files (*.*)|*.*||";
+		if (dgOpen->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
+		{
+			return;
+		}
+
+		//Showing image in picture box
+		Bitmap^ bmpSrc = gcnew Bitmap(dgOpen->FileName); //converting to bitmap
+		ptbSource->Image = bmpSrc;
+		ptbSource->Refresh();
+		src = imread(ConvertString2Char(dgOpen->FileName));
+		imshow("Source image showing via OpenCV", src); //new window
 	}
+	private: System::Void btnLearn_Click(System::Object^  sender, System::EventArgs^  e) {
 
-	//Showing image in picture box
-	Bitmap^ bmpSrc = gcnew Bitmap(dgOpen->FileName); //converting to bitmap
-	ptbSource->Image = bmpSrc;
-	ptbSource->Refresh();
-	src = imread(ConvertString2Char(dgOpen->FileName));
-	imshow("Source image showing via OpenCV", src); //new window
-}
-private: System::Void btnLearn_Click(System::Object^  sender, System::EventArgs^  e) {
+		//choose from where program should get data
+		FolderBrowserDialog^ folder = gcnew FolderBrowserDialog();
+		if (folder->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
+		{
+			return;
+		}
 
-	//choose from where program should get data
-	FolderBrowserDialog^ folder = gcnew FolderBrowserDialog();
-	if (folder->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
-	{
-		return;
-	}
-
-	System::String^ folderPath;
-	folderPath = folder->SelectedPath;
-	char buffer1[100] = { 0 };
-	if (folderPath->Length < sizeof(buffer1))
-		sprintf(buffer1, "%s", folderPath);
-	std::string folderPathString(buffer1); //path of the data content
+		System::String^ folderPath;
+		folderPath = folder->SelectedPath;
+		char buffer1[100] = { 0 };
+		if (folderPath->Length < sizeof(buffer1))
+			sprintf(buffer1, "%s", folderPath);
+		std::string folderPathString(buffer1); //path of the data content
 
 	
-	//choose where to save SVM file
-	SaveFileDialog^ saveFile = gcnew SaveFileDialog();
-	if (saveFile->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
-	{
-		return;
+		//choose where to save SVM file
+		SaveFileDialog^ saveFile = gcnew SaveFileDialog();
+		if (saveFile->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
+		{
+			return;
+		}
+
+		System::String^ saveFileName = saveFile->FileName; //FileName with path
+		char buffer2[100] = { 0 };
+		if (saveFileName->Length < sizeof(buffer2))
+			sprintf(buffer2, "%s", saveFileName);
+		std::string saveSVM(buffer2); //path (including name and extension) of the generated data (SVM)
 	}
 
-	System::String^ saveFileName = saveFile->FileName; //FileName with path
-	char buffer2[100] = { 0 };
-	if (saveFileName->Length < sizeof(buffer2))
-		sprintf(buffer2, "%s", saveFileName);
-	std::string saveSVM(buffer2); //path (including name and extension) of the generated data (SVM)
-}
-
-private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-}
-};
+	private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	}
+	};
 }
