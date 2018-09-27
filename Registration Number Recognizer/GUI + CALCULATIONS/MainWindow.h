@@ -4,6 +4,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgcodecs/imgcodecs.hpp>
+#include "SupportVectorMachine.h"
 
 
 namespace GUICALCULATIONS {
@@ -175,23 +176,32 @@ namespace GUICALCULATIONS {
 		System::String^ folderPath;
 		folderPath = folder->SelectedPath;
 		char buffer1[100] = { 0 };
-		if (folderPath->Length < sizeof(buffer1))
+		if (folderPath->Length < sizeof(buffer1)) {
 			sprintf(buffer1, "%s", folderPath);
+		}
 		std::string folderPathString(buffer1); //path of the data content
 
-	
-		//choose where to save SVM file
-		SaveFileDialog^ saveFile = gcnew SaveFileDialog();
-		if (saveFile->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
-		{
-			return;
-		}
+		////choose where to save SVM file
+		//SaveFileDialog^ saveFile = gcnew SaveFileDialog();
+		//if (saveFile->ShowDialog() == System::Windows::Forms::DialogResult::Cancel) {
+		//	return;
+		//}
 
-		System::String^ saveFileName = saveFile->FileName; //FileName with path
-		char buffer2[100] = { 0 };
-		if (saveFileName->Length < sizeof(buffer2))
-			sprintf(buffer2, "%s", saveFileName);
-		std::string saveSVM(buffer2); //path (including name and extension) of the generated data (SVM)
+		//System::String^ saveFileName = saveFile->FileName; //FileName with path
+		//char buffer2[100] = { 0 };
+		//if (saveFileName->Length < sizeof(buffer2)) {
+		//	sprintf(buffer2, "%s", saveFileName);
+		//}
+		//std::string saveSVM(buffer2); //path (including name and extension) of the generated data (SVM)
+		
+		std::string svmPath = "SVM/svm.txt";
+
+		if (SupportVectorMachine::Training(svmPath, folderPathString))
+		{
+			MessageBox::Show("\t   Training completed.\nSVM file has been saved in project directory.");
+		} else {
+			MessageBox::Show("Some error occured during the training");
+		}
 	}
 
 	private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {

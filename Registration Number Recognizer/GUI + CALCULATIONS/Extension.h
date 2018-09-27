@@ -21,7 +21,7 @@ namespace Extension {
 	public:
 		String2Character();
 		//char* ConvertString2Character(String str)
-		char* ConvertString2Character(System::String^ str) {
+		char* ConvertString2Character(System::String^ str) { //Marshall method
 			char* strs = (char*)(void*)Marshal::StringToHGlobalAnsi(str);
 			return strs;
 		}
