@@ -141,21 +141,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Core.cpp" />
     <ClCompile Include="Extension.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="SupportVectorMachine.cpp" />
-    <ClCompile Include="SVMTraining.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core.h" />
     <ClInclude Include="dirent.h" />
     <ClInclude Include="Extension.h" />
     <ClInclude Include="MainWindow.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="SupportVectorMachine.h" />
-    <ClInclude Include="SVMTraining.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainWindow.resx">

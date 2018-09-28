@@ -4,8 +4,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/ml.hpp>
 #include "dirent.h"
-#include "Extension.h"
 #include <iostream>
+#include "Extension.h"
 
 using namespace System;
 using namespace System::ComponentModel;
@@ -22,13 +22,13 @@ const int number_of_feature = 32;
 
 namespace SupportVectorMachine {
 	
-	vector<string> list_file(string folder_path);
-
-	vector<string> list_folder(string path);
-
-	static int count_pixel(Mat img, bool black_pixel = true);
-
-	static vector<float> calculate_feature(Mat src);
-
-	bool Training(string savepath, string trainImgpath);
+	//vector<string> getFilesPaths(string folder_path);
+	//vector<string> getFoldersPaths(string path);
+	vector<string> getContentPaths(string path);
+	//static int countPixels(Mat img, bool black_pixel = true);
+	static int countPixels(Mat img);
+	static vector<float> calculateFeature(Mat src);
+	bool training(string trainImgpath);
+	char characterRecognition(Mat imgCharacter);
+	bool recognize(Mat src, System::Windows::Forms::TextBox^  textBox, Matrix2Picture mat2bmp, System::Windows::Forms::PictureBox^  pictureBox1, System::Windows::Forms::PictureBox^  pictureBox2);
 }
