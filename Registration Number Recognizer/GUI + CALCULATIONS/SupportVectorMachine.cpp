@@ -177,133 +177,133 @@ char SupportVectorMachine::characterRecognition(Mat imgCharacter) {
 	//Ptr<SVM> svmNew = SVM::create();
 	//svmNew = SVM::load<SVM>("svm.txt"); //nie dziala
 	Ptr<SVM> svmNew = Algorithm::load<SVM>("SVM/svm.txt");
-
 	//SVM svmNew;
 	//svmNew.load("D:/svm.txt");
-
-	char c = '*';
-
+	char character = '*';
 	vector<float> feature = calculateFeature(imgCharacter);
-	// Open CV3.1
-	Mat m = Mat(1, number_of_feature, CV_32FC1);
-	for (size_t i = 0; i < feature.size(); ++i)
-	{
+	Mat mat = Mat(1, number_of_feature, CV_32FC1);
+	for (size_t i = 0; i < feature.size(); ++i) {
 		float temp = feature[i];
-		m.at<float>(0, i) = temp;
+		mat.at<float>(0, i) = temp;
 	}
-	//Mat m = Mat(number_of_feature,1, CV_32FC1);		// Open CV 2.4
+	//Mat m = Mat(number_of_feature,1, CV_32FC1);
 	//for (size_t i = 0; i < feature.size(); ++i)
 	//{
 	//float temp = feature[i];
 	//m.at<float>(i,0) = temp;
 	//}
-	int ri = int(svmNew->predict(m)); // Open CV 3.1
-									  /*int ri = int(svmNew.predict(m));*/
-	if (ri >= 0 && ri <= 9)
-		c = (char)(ri + 48); //ma ascii 0 = 48
-	if (ri >= 10 && ri < 18)
-		c = (char)(ri + 55); //ma accii A = 5, --> tu A-H
-	if (ri >= 18 && ri < 22)
-		c = (char)(ri + 55 + 2); //K-N, bo I,J
-	if (ri == 22) c = 'P';
-	if (ri == 23) c = 'S';
-	if (ri >= 24 && ri < 27)
-		c = (char)(ri + 60); //T-V,  
-	if (ri >= 27 && ri < 30)
-		c = (char)(ri + 61); //X-Z
+	int ri = int(svmNew->predict(mat));
 
-	return c;
-
+	if (ri >= 0 && ri <= 9) {
+		character = (char)(ri + 48); //ma ascii 0 = 48
+	}
+	if (ri >= 10 && ri < 18) {
+		character = (char)(ri + 55); //ma accii A = 5, --> tu A-H
+	}
+	if (ri >= 18 && ri < 22) {
+		character = (char)(ri + 55 + 2); //K-N, bo I,J
+	}
+	if (ri == 22) {
+		character = 'P';
+	}
+	if (ri == 23) {
+		character = 'S';
+	}
+	if (ri >= 24 && ri < 27) {
+		character = (char)(ri + 60); //T-V, 
+	}
+	if (ri >= 27 && ri < 30) {
+		character = (char)(ri + 61); //X-Z
+	}
+	return character;
 }
 
-bool SupportVectorMachine::recognize(Mat srcImg, System::Windows::Forms::TextBox^  textBox, Matrix2Picture mat2bmp, System::Windows::Forms::PictureBox^  pictureBox1, System::Windows::Forms::PictureBox^  pictureBox2) {
+bool SupportVectorMachine::recognize(Mat srcImg, System::Windows::Forms::TextBox^ textBox, Matrix2Picture mat2bmp, System::Windows::Forms::PictureBox^  pictureBox1, System::Windows::Forms::PictureBox^  pictureBox2) {
 	vector<Mat> plates;
-	vector<Mat> draw_character;
+	vector<Mat> drawCharacter;
 	vector<vector<Mat>> characters;
-	vector<string> text_recognition;
-	vector<double> process_time;
-	void sort_character(vector<Mat>&);
+	vector<string> textRecognition;
 	Mat image = srcImg;
 	Mat gray, binary;
-	vector<vector<cv::Point> > contours;
+	vector<vector<cv::Point>> contours;
 	vector<Vec4i> hierarchy;
-	double t = (double)cvGetTickCount();
+	//double t = (double)cvGetTickCount();
 	cvtColor(image, gray, CV_BGR2GRAY);
-	//imshow("gray", gray);
+	imshow("gray", gray);
 	adaptiveThreshold(gray, binary, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 55, 5);
-	//imshow("binary",binary);
-	Mat or_binary = binary.clone();
+	imshow("binary",binary);
+	Mat orBinary = binary.clone();
 	Mat element = getStructuringElement(MORPH_RECT, cv::Size(3, 3));
 	erode(binary, binary, element);
 	dilate(binary, binary, element);
 	findContours(binary, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
+
 	if (contours.size() <= 0) return false;
-	for (size_t i = 0; i < contours.size(); ++i)
-	{
+	for (size_t i = 0; i < contours.size(); ++i) {
 		Rect r = boundingRect(contours.at(i));
-		if (r.width > image.cols / 2 || r.height > image.cols / 2 || r.width < 120 || r.height < 20
-			|| (double)r.width / r.height > 4.5 || (double)r.width / r.height < 3.5)
+
+		if (r.width > image.cols / 2 || r.height > image.cols / 2 
+			|| r.width < 120 || r.height < 20
+			|| (double)r.width / r.height > 4.5 
+			|| (double)r.width / r.height < 3.5) {
 			continue;
-		Mat sub_binary = or_binary(r);
-		Mat _plate = sub_binary.clone();
-		vector<vector<cv::Point> > sub_contours;
-		vector<Vec4i> sub_hierarchy;
-		findContours(sub_binary, sub_contours, sub_hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
-		if (sub_contours.size() < 8) continue;
+		}
+		Mat subBinary = orBinary(r);
+		Mat plateMatrix = subBinary.clone();
+		vector<vector<cv::Point> > subContours;
+		vector<Vec4i> subHierarchy;
+		findContours(subBinary, subContours, subHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
+
+		if (subContours.size() < 8) {
+			continue;
+		}
 		int count = 0;
 		vector<Mat> c;
-		Mat sub_image = image(r);
-		vector<Rect> r_characters;
-		for (size_t j = 0; j < sub_contours.size(); ++j)
-		{
-			Rect sub_r = boundingRect(sub_contours.at(j));
-			if (sub_r.height > r.height / 2 && sub_r.width < r.width / 8 && sub_r.width > 5 && r.width > 15 && sub_r.x > 5)
-			{
-				Mat cj = _plate(sub_r);
-				double ratio = (double)countPixels(cj) / (cj.cols*cj.rows);
-				if (ratio > 0.2 && ratio < 0.7)
-				{
-					r_characters.push_back(sub_r);
-					rectangle(sub_image, sub_r, Scalar(0, 0, 255), 2, 8, 0);
+		Mat subImage = image(r);
+		vector<Rect> rCharacters;
+		for (size_t j = 0; j < subContours.size(); ++j) {
+			Rect sub_r = boundingRect(subContours.at(j));
+
+			if (sub_r.height > r.height / 2 && sub_r.width < r.width / 8 && sub_r.width > 5 && r.width > 15 && sub_r.x > 5) {
+				Mat additionalMatrix = plateMatrix(sub_r);
+				double ratio = (double)countPixels(additionalMatrix) / (additionalMatrix.cols*additionalMatrix.rows);
+
+				if (ratio > 0.2 && ratio < 0.7) {
+					rCharacters.push_back(sub_r);
+					rectangle(subImage, sub_r, Scalar(0, 0, 255), 2, 8, 0);
 				}
 			}
 		}
-		if (r_characters.size() >= 7)
-		{
-			// sap xep 
-			for (int i = 0; i < r_characters.size() - 1; ++i)
-			{
-				for (int j = i + 1; j < r_characters.size(); ++j)
-				{
+		if (rCharacters.size() >= 7) {
+			for (int i = 0; i < rCharacters.size() - 1; ++i) {
+				for (int j = i + 1; j < rCharacters.size(); ++j) {
 					Rect temp;
-					if (r_characters.at(j).x < r_characters.at(i).x)
-					{
-						temp = r_characters.at(j);
-						r_characters.at(j) = r_characters.at(i);
-						r_characters.at(i) = temp;
+					if (rCharacters.at(j).x < rCharacters.at(i).x) {
+						temp = rCharacters.at(j);
+						rCharacters.at(j) = rCharacters.at(i);
+						rCharacters.at(i) = temp;
 					}
 				}
 			}
-			for (int i = 0; i < r_characters.size(); ++i)
-			{
-				Mat cj = _plate(r_characters.at(i));
-				c.push_back(cj);
+			for (int i = 0; i < rCharacters.size(); ++i) {
+				Mat additionalMatrix = plateMatrix(rCharacters.at(i));
+				c.push_back(additionalMatrix);
 			}
 			characters.push_back(c);
-			sub_binary = or_binary(r);
-			plates.push_back(_plate);
-			draw_character.push_back(sub_image);
+			subBinary = orBinary(r);
+			plates.push_back(plateMatrix);
+			drawCharacter.push_back(subImage);
 		}
 		rectangle(image, r, Scalar(0, 255, 0), 2, 8, 0);
 	}
 
 	//imshow("plate", image);
-	//imshow("char", draw_character[0]);
+	//imshow("char", drawCharacter[0]);
 	Mat plateImg, chaImg;
-	convertScaleAbs(plates[0], plateImg);
-	convertScaleAbs(draw_character[0], chaImg);
-	resize(plateImg, plateImg, cv::Size(200, 50));
-	resize(chaImg, chaImg, cv::Size(200, 50));
+	cv::convertScaleAbs(plates[0], plateImg);
+	cv::convertScaleAbs(drawCharacter[0], chaImg);
+	cv::resize(plateImg, plateImg, cv::Size(200, 50));
+	cv::resize(chaImg, chaImg, cv::Size(200, 50));
 	pictureBox1->Image = mat2bmp.Matrix2Bitmap(plateImg);
 	pictureBox2->Image = mat2bmp.Matrix2Bitmap(chaImg);
 
@@ -313,18 +313,16 @@ bool SupportVectorMachine::recognize(Mat srcImg, System::Windows::Forms::TextBox
 	pictureBox1->Refresh();
 	pictureBox2->Refresh();
 
-	// Plate recoginatinon
-	for (size_t i = 0; i < characters.size(); i++)
-	{
+	// Plate recognition
+	for (size_t i = 0; i < characters.size(); i++) {
 		string result;
-		for (size_t j = 0; j < characters.at(i).size(); ++j)
-		{
+		for (size_t j = 0; j < characters.at(i).size(); ++j) {
 
 			char cs = characterRecognition(characters.at(i).at(j));
 			result.push_back(cs);
 
 		}
-		text_recognition.push_back(result);
+		textRecognition.push_back(result);
 		System::String^ str = gcnew System::String(result.c_str()); // Convert std string to System String
 		textBox->Text += str;
 	}
