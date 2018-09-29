@@ -197,10 +197,6 @@ namespace GUICALCULATIONS {
 			textBox->Text = "";
 
 			if (recognize(src, textBox, mat2bmp, pictureBox1, pictureBox2)) {
-				//Mat plate;
-				//Mat markedCharacters; //mat to img
-				//imshow("Plate", src); //new window
-				//imshow("Marked characters", src); //new window
 			} else {
 				MessageBox::Show("Some error occured during recognition");
 			}
@@ -219,20 +215,6 @@ namespace GUICALCULATIONS {
 				sprintf(buffer, "%s", folderPath);
 			}
 			std::string folderPathString(buffer); //path of the data content
-
-			////choose where to save SVM file
-			//SaveFileDialog^ saveFile = gcnew SaveFileDialog();
-			//if (saveFile->ShowDialog() == System::Windows::Forms::DialogResult::Cancel) {
-			//	return;
-			//}
-			//System::String^ saveFileName = saveFile->FileName; //FileName with path
-			//char buffer2[100] = { 0 };
-			//if (saveFileName->Length < sizeof(buffer2)) {
-			//	sprintf(buffer2, "%s", saveFileName);
-			//}
-			//std::string saveSVM(buffer2); //path (including name and extension) of the generated data (SVM)
-		
-
 			if (training(folderPathString)) {
 				MessageBox::Show("\t   Training completed.\nSVM file has been saved in project directory.");
 			} else {

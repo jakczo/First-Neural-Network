@@ -13,14 +13,12 @@ namespace Extension {
 	class Matrix2Picture {
 	public:
 		Matrix2Picture();
-		//Bitmap -> mat i pic
 		System::Drawing::Bitmap^ Matrix2Bitmap(cv::Mat& colorImage);
 	};
 
 	class String2Character {
 	public:
 		String2Character();
-		//char* ConvertString2Character(String str)
 		char* ConvertString2Character(System::String^ str) { //Marshall method
 			char* strs = (char*)(void*)Marshal::StringToHGlobalAnsi(str);
 			return strs;
@@ -35,12 +33,4 @@ namespace Extension {
 			return ss.str();
 		}
 	};
-
-	//class Character2String {
-
-	//};
-
-	//class Number2Row {
-
-	//};
 }

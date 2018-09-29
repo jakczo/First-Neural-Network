@@ -11,7 +11,6 @@ Matrix2Picture::Matrix2Picture() {
 }
 
 System::Drawing::Bitmap^ Matrix2Picture::Matrix2Bitmap(cv::Mat& colorImage) {
-	//System::Drawing::Graphics^ graphics = control->CreateGraphics();
 	System::IntPtr ptr(colorImage.ptr());
 	System::Drawing::Bitmap^ bitmap;
 	switch (colorImage.type()) {
