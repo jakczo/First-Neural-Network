@@ -185,7 +185,7 @@ vector<vector<cv::Point>> SupportVectorMachine::findContours(Mat binaryImage) {
 	imshow("1.Erode", binaryClone);
 	dilate(binaryClone, binaryClone, element); //making objects in white bigger
 	imshow("2.Dilate", binaryClone);
-	findContours(binaryClone, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));	//Finding contours on binary picture
+	findContours(binaryClone, contours, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));	//Finding contours on binaryImagepicture CV_RETR_LIST
 	return contours;
 }
 
@@ -200,20 +200,23 @@ Mat SupportVectorMachine::convertToBinary(Mat normalImage) {
 bool SupportVectorMachine::recognize(Mat mainImage, System::Windows::Forms::TextBox^ textBox, Matrix2Picture mat2bmp, System::Windows::Forms::PictureBox^  pictureBox1, System::Windows::Forms::PictureBox^  pictureBox2) {
 	vector<Mat> plates;
 	vector<Mat> drawCharacter;
-	vector<vector<Mat>> characters;
+	vector<vector<Mat>> manyPlatesCharacters; //vector of all characters restored from many possible plates on the picture
 	vector<string> textRecognition;
 	Mat image = mainImage.clone();
-	Mat binary;
+	Mat binaryImage;
 	bool flagPlateFound = false;
 	bool flagCharacterFound = false;
 	vector<vector<cv::Point>> contours;
 	
-	if (image.size().height > cv::Size(1280, 720).height && image.size().width > cv::Size(1280, 720).width) {
-		resize(image, image, cv::Size(604, 806));
+	if (image.size().width > cv::Size(1500, 2000).width && image.size().height > cv::Size(1500, 2000).height) {
+		if (image.size().width > cv::Size(3000, 4000).width && image.size().height > cv::Size(3000, 4000).height) {
+			resize(image, image, cv::Size(image.size().width / 2, image.size().height / 2));
+		}
+		resize(image, image, cv::Size(image.size().width/2, image.size().height / 2));
 	}
 	
-	binary = convertToBinary(image);
-	contours = findContours(binary);
+	binaryImage = convertToBinary(image);
+	contours = findContours(binaryImage);
 	if (contours.size() <= 0) { //if there are no contours...
 		return false; //...exit function
 	}
@@ -222,9 +225,7 @@ bool SupportVectorMachine::recognize(Mat mainImage, System::Windows::Forms::Text
 		Rect actualContour = boundingRect(contours.at(i)); //pass i-th contour
 		rectangle(image, actualContour, Scalar(0, 0, 255), 2, 8, 0); //color every passing contour
 		imshow("before", image);
-		if (actualContour.width > image.cols / 2
-			|| actualContour.height > image.cols / 2
-			|| actualContour.width < 120
+		if (actualContour.width < 120
 			|| actualContour.height < 40
 			|| (double)actualContour.width / actualContour.height > 4.5
 			|| (double)actualContour.width / actualContour.height < 3.5) {
@@ -233,32 +234,29 @@ bool SupportVectorMachine::recognize(Mat mainImage, System::Windows::Forms::Text
 		imshow("after", image);
 
 		//we found our plate
-		//Cut binary in r-place and save it to subBinary
-		Mat subBinary = binary(actualContour); //fragment of the photo in the place of the contour
-		
-		
-		Mat plateMatrix = subBinary.clone();
+		//Cut binaryImagein r-place and save it to actualBinaryContour
+		Mat actualBinaryContour = binaryImage(actualContour); //fragment of the photo in the place of the contour
+				
+		Mat plateMatrix = actualBinaryContour.clone();
 
-		vector<vector<cv::Point>> subContours = findContours(subBinary);
-		if (subContours.size() < 8) {
+		vector<vector<cv::Point>> subContours = findContours(actualBinaryContour);
+		if (subContours.size() < 8) { //8 letters
 			continue;
 		}
-
-		int count = 0;
-		vector<Mat> c;
+		vector<Mat> singlePlateCharacters;
 		Mat subImage = image(actualContour);
 		imshow("9.subimage", subImage);
 		vector<Rect> rCharacters;
 		for (size_t j = 0; j < subContours.size(); ++j) {
-			Rect sub_r = boundingRect(subContours.at(j));
+			Rect actualSubContour = boundingRect(subContours.at(j));
 
-			if (sub_r.height > actualContour.height / 2 && sub_r.width < actualContour.width / 8 && sub_r.width > 5 && actualContour.width > 15 && sub_r.x > 5) {
-				Mat additionalMatrix = plateMatrix(sub_r);
+			if (actualSubContour.height > actualContour.height / 2 && actualSubContour.width < actualContour.width / 8 && actualSubContour.width > 5 && actualContour.width > 15 && actualSubContour.x > 5) {
+				Mat additionalMatrix = plateMatrix(actualSubContour);
 				double ratio = (double)countPixels(additionalMatrix) / (additionalMatrix.cols*additionalMatrix.rows);
 
 				if (ratio > 0.2 && ratio < 0.7) {
-					rCharacters.push_back(sub_r);
-					rectangle(subImage, sub_r, Scalar(255, 0, 0), 2, 8, 0);
+					rCharacters.push_back(actualSubContour);
+					rectangle(subImage, actualSubContour, Scalar(255, 0, 0), 2, 8, 0);
 				}
 			}
 		}
@@ -275,10 +273,10 @@ bool SupportVectorMachine::recognize(Mat mainImage, System::Windows::Forms::Text
 			}
 			for (int i = 0; i < rCharacters.size(); ++i) {
 				Mat additionalMatrix = plateMatrix(rCharacters.at(i));
-				c.push_back(additionalMatrix);
+				singlePlateCharacters.push_back(additionalMatrix);
 			}
-			characters.push_back(c);
-			subBinary = binary(actualContour);
+			manyPlatesCharacters.push_back(singlePlateCharacters);
+			actualBinaryContour = binaryImage(actualContour);
 			plates.push_back(plateMatrix);
 			drawCharacter.push_back(subImage);
 			flagCharacterFound = true;
@@ -300,11 +298,11 @@ bool SupportVectorMachine::recognize(Mat mainImage, System::Windows::Forms::Text
 		pictureBox2->Refresh();
 
 		// Plate recognition
-		for (size_t i = 0; i < characters.size(); i++) {
+		for (size_t i = 0; i < manyPlatesCharacters.size(); i++) {
 			string result;
-			for (size_t j = 0; j < characters.at(i).size(); ++j) {
+			for (size_t j = 0; j < manyPlatesCharacters.at(i).size(); ++j) {
 
-				char cs = characterRecognition(characters.at(i).at(j));
+				char cs = characterRecognition(manyPlatesCharacters.at(i).at(j));
 				result.push_back(cs);
 			}
 			textRecognition.push_back(result);
