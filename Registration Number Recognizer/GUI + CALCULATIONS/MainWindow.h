@@ -160,7 +160,7 @@ namespace GUICALCULATIONS {
 			this->Controls->Add(this->ptbSource);
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MainWindow";
-			this->Text = L"MainWindow";
+			this->Text = L"Registration Number Recognizer";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ptbSource))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();

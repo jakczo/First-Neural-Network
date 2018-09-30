@@ -165,7 +165,7 @@ char SupportVectorMachine::characterRecognition(Mat imgCharacter) {
 		mat.at<float>(0, i) = temp;
 	}
 
-	int id= int(svmNew->predict(mat));
+	int id = int(svmNew->predict(mat));
 
 	if (id >= 0 && id <= 9)
 		character = (char)(48 + id); //0-9
@@ -216,6 +216,14 @@ bool SupportVectorMachine::recognize(Mat mainImage, System::Windows::Forms::Text
 	}
 	
 	binaryImage = convertToBinary(image);
+//do usuniecia
+	Mat element = getStructuringElement(MORPH_RECT, cv::Size(3, 3));
+	erode(binaryImage, binaryImage, element); //make objects in black bigger
+	imshow("Erode", binaryImage);
+	dilate(binaryImage, binaryImage, element); //making objects in white bigger
+	imshow("Dilate", binaryImage);
+
+
 	contours = findContours(binaryImage);
 	if (contours.size() <= 0) { //if there are no contours...
 		return false; //...exit function
