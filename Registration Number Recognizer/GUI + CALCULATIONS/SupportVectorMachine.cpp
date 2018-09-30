@@ -240,7 +240,7 @@ bool SupportVectorMachine::recognize(Mat mainImage, System::Windows::Forms::Text
 		Mat plateMatrix = actualBinaryContour.clone();
 
 		vector<vector<cv::Point>> subContours = findContours(actualBinaryContour);
-		if (subContours.size() < 8) { //8 letters
+		if (subContours.size() < 7) { //7 letters
 			continue;
 		}
 		vector<Mat> singlePlateCharacters;
@@ -250,7 +250,7 @@ bool SupportVectorMachine::recognize(Mat mainImage, System::Windows::Forms::Text
 		for (size_t j = 0; j < subContours.size(); ++j) {
 			Rect actualSubContour = boundingRect(subContours.at(j));
 
-			if (actualSubContour.height > actualContour.height / 2 && actualSubContour.width < actualContour.width / 8 && actualSubContour.width > 5 && actualContour.width > 15 && actualSubContour.x > 5) {
+			if (actualSubContour.height > actualContour.height / 2 && actualSubContour.width < actualContour.width / 7 && actualSubContour.width > 5 && actualContour.width > 15 && actualSubContour.x > 5) {
 				Mat additionalMatrix = plateMatrix(actualSubContour);
 				double ratio = (double)countPixels(additionalMatrix) / (additionalMatrix.cols*additionalMatrix.rows);
 
