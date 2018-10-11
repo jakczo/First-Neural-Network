@@ -32,11 +32,6 @@ Below I place a copy of the final report (in Polish language) containing all the
 
 ### 9. [Bibliography](#-9-bibliography-)
 
-@@@@@@@@@@@@@@@@
-#### Opis zasady działania algorytmu Levenshteina krok po kroku:
-![Alt text](images/1.png?raw=true "matematyczna definicja algorytmu Levenshteina. Źródło: Wikipedia.")
-@@@@@@@@@@@@@@@@@@@@
-
 ## <p align="center"> 1. Topic, problem examination and main assumptions of the program </p>
 
 The project’s topic is an application which searches for a car license plate on a photo and then recognises it’s registration number (at the end user can copy the registration number as a string from generated textbox). 
